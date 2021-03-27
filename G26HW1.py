@@ -36,6 +36,11 @@ def main():
     csv_file.show()
 
 
+    # SETTING GLOBAL VARIABLES
+    numsam = csv_file.count()
+    print("Number of Samples = ", numsam)
+
+
 if __name__ == "__main__":
 	main()
 
