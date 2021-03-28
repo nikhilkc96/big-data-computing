@@ -32,8 +32,11 @@ def main():
     #Read the file path from the argv
     data_path = sys.argv[3]
     assert os.path.isfile(data_path), "File or folder not found"
-    RawData = spark.read.csv(data_path)
+    RawData = spark.read.csv(data_path).cache()
+    RawData.repartition(numPartitions=K)
     RawData.show()
+
+    normalizedRatings =
 
 
     # SETTING GLOBAL VARIABLES
