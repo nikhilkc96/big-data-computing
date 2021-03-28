@@ -38,7 +38,7 @@ def main():
 
     # SETTING GLOBAL VARIABLES
     numsam = RawData.count()
-    print("Number of Samples : ", numsam)
+    print("Number of Samples :: ", numsam)
 
 
 if __name__ == "__main__":
