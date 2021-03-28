@@ -32,12 +32,12 @@ def main():
     #Read the file path from the argv
     data_path = sys.argv[3]
     assert os.path.isfile(data_path), "File or folder not found"
-    csv_file = spark.read.csv(data_path)
-    csv_file.show()
+    RawData = spark.read.csv(data_path)
+    RawData.show()
 
 
     # SETTING GLOBAL VARIABLES
-    numsam = csv_file.count()
+    numsam = RawData.count()
     print("Number of Samples = ", numsam)
 
 
