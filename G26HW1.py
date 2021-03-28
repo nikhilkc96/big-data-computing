@@ -36,7 +36,10 @@ def main():
     RawData.repartition(numPartitions=K)
     RawData.show()
 
-    normalizedRatings =
+
+
+
+    #normalizedRatings =
 
 
     # SETTING GLOBAL VARIABLES
