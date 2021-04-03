@@ -1,5 +1,8 @@
 from pyspark import SparkContext, SparkConf, conf
 from pyspark.sql import SparkSession
+from pyspark.sql.types import *
+from pyspark.sql.functions import mean
+
 sc = SparkContext()
 spark = SparkSession(sparkContext=sc)
 import sys
@@ -7,7 +10,9 @@ import os
 import random as rand
 
 
-
+# def avg(df,column):
+#     average = df.agg(mean(df[column]).alias("_c2")).collect()[0]["_c2"]
+#     return average
 
 
 def main():
@@ -34,14 +39,24 @@ def main():
     #Partition of the data given 
     RawData =  RawData.repartition(K)
     RawData.show()
-    print("K::" +str(K) +" \nT::"+str(T))
+    print("K ::" +str(K) +" \nT ::"+str(T))
     print("Number of Partitions ::",RawData.rdd.getNumPartitions())
     print("Number of Samples :: ", RawData.count())
-
+    
     # RDD String (RawData) to RDD Pair(normalizedRatings)
-    normalizedRatings = RawData.map()
-                        
+    RawData = RawData.withColumn("_c2",RawData['_c2'].cast(DoubleType()).alias("_c2"))
+    RawData.show()
+    RawData.printSchema()
+    AvgRating =  RawData.groupby("_c1").avg("_c2")
+    AvgRating.show()
+    
+    #AvgRating = avg(RawData,"_c2")
+    print("AvgRating ::",AvgRating)
+    # normalizedRatings = RawData.withColumn('_c2',('_c2')-float(AvgRating))
+    # normalizedRatings.show()
 
+
+    
 
 if __name__ == "__main__":
 	main()
