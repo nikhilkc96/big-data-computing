@@ -34,8 +34,11 @@ The expected sample size per cluster t (an integer).
 6. Print the following values: (a) value of approxSilhFull, (b) time to compute approxSilhFull (Step 4),  (c) value of exactSilhSample, (d) time to compute exactSilhSample (Step 5). Times must be in ms. Use the following output format
 Test your program using the following input clusterings computed on pointsets in R^2 which represent Uber pickups in New York City (if you want to learn more about the datasets click here)
 
-Uber_3_small.csv: 1012 points subdivided into k=3 clusters;
-Uber_3_large.csv: 1028136 points subdivided into k=3 clusters;
+Uber_3_small.csv: 1012 points subdivided into k=3 clusters.
+
+Uber_3_large.csv: 1028136 points subdivided into k=3 clusters.
+
 Uber_10_large.csv: 1028136 points subdivided into k=10 clusters.
+
 and fill the table given in this word file with the results of the experiments indicated in the document.
 
