@@ -1,28 +1,16 @@
 import os
 import sys
 from pyspark import SparkContext, SparkConf
-from pyspark.ml.clustering import KMeans
 import math
-from pyspark.ml.evaluation import ClusteringEvaluator
-from pyspark.ml.feature import VectorAssembler
-
-
+import random
+from pyspark.mllib.linalg import Vectors
+from pyspark.mllib.linalg import Vector
 
 
 def strToTuple(line):
     ch = line.strip().split(",")
     point = tuple(float(ch[i]) for i in range(len(ch)-1))
     return (point, int(ch[-1]))  # returns (point, cluster_index)
-
-
-def geo_dist(lat1, lon1,lat2,lon2):
-    R = 6372.8
-    phi1 = math.radians(lat1)
-    phi2 = math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dlambda = math.radians(lon2 -lon1)
-    a = math.sin(dphi/2)**2 + math.cos(phi1) * math.cos(phi2)*math.sin(dlambda/2)**2
-    return 2*R*math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 def main():
     #check for ars in the cmd
@@ -31,6 +19,7 @@ def main():
     #Spark Setup
     conf = SparkConf().setAppName('G26HW2').setMaster("local[*]")
     sc = SparkContext(conf=conf)
+    sc.setLogLevel("WARN")
     #Read inputs
     #Read k from the argv
     K = sys.argv[1]
@@ -43,9 +32,15 @@ def main():
     #Read the file path from the argv
     data_path = sys.argv[3]
     assert os.path.isfile(data_path), "File or folder not found"
-    fullClustering = sc.textFile(data_path).map(strToTuple)
-    #Partition of the data given
-    fullClustering = fullClustering.repartition(numPartitions=K)
+    fullClustering = sc.textFile(data_path)
+    fullClustering = fullClustering.map(
+        lambda x: strToTuple(x)).repartition(8).cache()
+    
+    clusterSizes = fullClustering.map(lambda x:x).countByValue()
+    print(clusterSizes)
+    sharedClusterSizes = sc.broadcast(clusterSizes)
+    # clusteringSampleRDD = 
+
     print("Number of Partitions ::", fullClustering.getNumPartitions())
     print("Number of Samples :: ", fullClustering.count())
     print("INPUT PARAMETERS: K="+str(K)+", T=" +
