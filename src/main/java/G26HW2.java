@@ -57,26 +57,24 @@ public class G26HW2 {
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         long time_approx_start = System.currentTimeMillis();
         JavaRDD<Double> Score = fullClustering.map((x) -> {
-            double sum = 0d;
+            double[] sum = new double[K];
             double[] par = new double[K];
             Vector ClusterPoint = x._1;
             int ClusterIndex = x._2;
+            for(int i = 0; i < K; i++)
+                par[i] = 1/Double.min(T, sharedClusterSizes.value().get(i).doubleValue());
             for (Tuple2<Vector, Integer> tuple2 : clusteringSample.getValue()) {
                 Vector ClusterPoint2 = tuple2._1;
                 int ClusterIndex2 = tuple2._2;
-                if (ClusterIndex == ClusterIndex2) {
-                    sum += Vectors.sqdist(ClusterPoint, ClusterPoint2);
-                }
-                if (ClusterIndex != ClusterIndex2) {
-                    par[ClusterIndex2] += Vectors.sqdist(ClusterPoint, ClusterPoint2);
-
-                }
+               sum[ClusterIndex2] += Vectors.sqdist(ClusterPoint,ClusterPoint2);
             }
-            double approx1 = sum / Math.min(T, sharedClusterSizes.getValue().get(ClusterIndex).doubleValue());
+            for(int i=0;i<K;i++)
+                sum[i] *= par[i];
+            double approx1 =sum[ClusterIndex];
             double approx2 = Double.MAX_VALUE;
             for (int i = 0; i < K; i++) {
-                if (i != ClusterIndex) {
-                    approx2 = Math.min(par[i] / Math.min(T, sharedClusterSizes.getValue().get(i).doubleValue()), approx2);
+                if (i != ClusterIndex && approx2 > sum[i]) {
+                    approx2 = sum[i];
                 }
             }
             return (approx2 - approx1) / Math.max(approx1, approx2) / size;
@@ -98,24 +96,20 @@ public class G26HW2 {
         for (Tuple2<Vector, Integer> tuple1 : clusteringSample.getValue()) {
             Vector ClusterPoint = tuple1._1;
             int ClusterIndex = tuple1._2;
-            double sum = 0d;
+            double sum[] = new double[K];
             double par[] = new double[K];
             for (Tuple2<Vector, Integer> tuple2 : clusteringSample.getValue()) {
                 Vector ClusterPoint2 = tuple2._1;
                 int ClusterIndex2 = tuple2._2;
-                if (!ClusterPoint.equals(ClusterPoint2) && ClusterIndex == ClusterIndex2) {
-                    sum += Vectors.sqdist(ClusterPoint, ClusterPoint2);
-                }
-                if (ClusterIndex != ClusterIndex2) {
-                    par[ClusterIndex2] += Vectors.sqdist(ClusterPoint, ClusterPoint2);
-
-                }
+                sum[ClusterIndex2] += Vectors.sqdist(ClusterPoint,ClusterPoint2);
             }
-            double approx1 = sum / SamclustersSize[ClusterIndex];
+            for (int i=0;i<K;i++)
+                sum[i]=sum[i]/SamclustersSize[i];
+            double approx1 =sum[ClusterIndex];
             double approx2 = Double.MAX_VALUE;
             for (int i = 0; i < K; i++) {
-                if (i != ClusterIndex) {
-                    approx2 = Math.min(par[i] / SamclustersSize[i],approx2);
+                if (i != ClusterIndex && approx2 > sum[i]) {
+                    approx2 = sum[i];
                 }}
 
             double SilhSample = (approx2 - approx1 )/ Math.max(approx1, approx2) / clusteringSample.getValue().size();
