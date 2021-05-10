@@ -59,8 +59,6 @@ public class G26HW2 {
         JavaRDD<Double> Score = fullClustering.map((x) -> {
             double sum = 0d;
             double[] par = new double[K];
-            for (int i = 0; i < K; i++)
-                par[i] = 0d;
             Vector ClusterPoint = x._1;
             int ClusterIndex = x._2;
             for (Tuple2<Vector, Integer> tuple2 : clusteringSample.getValue()) {
