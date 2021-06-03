@@ -25,7 +25,7 @@ public class G26HW2 {
 
     public static void main(String[] args) throws IOException {
         //Sets Spark configuration
-        SparkConf conf = new SparkConf(true).setAppName("G26HW2");
+        SparkConf conf = new SparkConf(true).setAppName("Homework2");
         JavaSparkContext sc = new JavaSparkContext(conf);
         sc.setLogLevel("WARN");
         //Check the args count
