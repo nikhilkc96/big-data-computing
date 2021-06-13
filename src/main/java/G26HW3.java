@@ -40,7 +40,7 @@ public class G26HW3 {
         int Iter = Integer.parseInt(args[3]);
         int M = Integer.parseInt(args[4]);
         int L = Integer.parseInt(args[5]);
-        long size = sc.textFile(file).cache().count();
+        long size = sc.textFile(file).count();
         long read_time_start = System.currentTimeMillis();
         JavaRDD<Vector> inputPoints = sc.textFile(file).repartition(L).map(s -> {
             String[] arr = s.split(" ");
@@ -51,7 +51,6 @@ public class G26HW3 {
             return Vectors.dense(values);
         }).cache();
         long read_time_end = System.currentTimeMillis();
-        System.out.println("Time for input reading = " + (System.currentTimeMillis() - read_time_start));
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         //                PART 2
@@ -111,6 +110,7 @@ public class G26HW3 {
             double approxSilhFull = Score.reduce((x, y) -> x + y);
             long time_approx_end = System.currentTimeMillis();
 
+            System.out.println("Time for input reading = " + (read_time_end - read_time_start));
             System.out.println("Number of Clusters K :: " + k);
             System.out.println("Silhouette Coefficient :: " + approxSilhFull);
             System.out.println("Time for Clustering :: " + (read_time_cl_end-read_time_cl_start));
